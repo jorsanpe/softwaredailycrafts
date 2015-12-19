@@ -15,19 +15,10 @@
 #include <memory_log.h>
 
 
-void PrintNextLogMessage(Log *log)
-{
-    char log_message[MAX_LINE_LENGTH];
-
-    if (LogRead(log, log_message, MAX_LINE_LENGTH) != -1) {
-        printf("%s", log_message);
-    }
-}
-
 void DoTest(Log *log)
 {
     unsigned int offset, i;
-    char msg[128];
+    char msg[MAX_LINE_LENGTH];
 
     for (i=0; i<6; ++i) {
         sprintf(msg, "Log message %d", i);
@@ -39,7 +30,9 @@ void DoTest(Log *log)
         printf("> Reading log from offset %d\n", offset);
         LogSeek(log, offset);
         for (i=0; i<3; ++i) {
-            PrintNextLogMessage(log);
+            if (LogRead(log, msg, MAX_LINE_LENGTH) != -1) {
+                printf("%s", msg);
+            }
         }
     }
 
