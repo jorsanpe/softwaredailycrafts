@@ -27,12 +27,13 @@ void PrintNextLogMessage(Log *log)
 void DoTest(Log *log)
 {
     unsigned int offset, i;
+    char msg[128];
 
-    LogWrite(log, "The first log message");
-    LogWrite(log, "The second log message");
-    LogWrite(log, "The third log message");
-    LogWrite(log, "The fourth log message");
-    LogWrite(log, "The fifth log message");
+    for (i=0; i<6; ++i) {
+        sprintf(msg, "Log message %d", i);
+        LogWrite(log, msg);
+    }
+    printf("> Written %d log messages\n", i);
 
     for (offset=0; offset<3; ++offset) {
         printf("> Reading log from offset %d\n", offset);
@@ -43,6 +44,8 @@ void DoTest(Log *log)
     }
 
     printf("\n");
+
+    LogDestroy(log);
 }
 
 int main(int argc, char **argv)
@@ -50,15 +53,13 @@ int main(int argc, char **argv)
     MemoryLog memory_log;
     FileLog file_log;
 
-    printf("> Testing with a memory log\n");
+    printf("> Testing with a memory log (max_msg=4)\n");
     MemoryLogInit(&memory_log, 4);
     DoTest((Log *)&memory_log);
-    LogDestroy((Log *)&memory_log);
 
     printf("> Testing with a file log\n");
     FileLogInit(&file_log, "messages.log");
     DoTest((Log *)&file_log);
-    LogDestroy((Log *)&file_log);
 
     return 0;
 }
