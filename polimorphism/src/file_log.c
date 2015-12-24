@@ -55,19 +55,29 @@ int FileLogRead(Log *log, char *buffer, unsigned int size)
     return (string == NULL) ? -1 : 0;
 }
 
+static inline int MoveFilePositionToStart(FILE *filp)
+{
+    return fseek(filp, 0, SEEK_SET);
+}
+
+static inline int MoveFilePositionToEnd(FILE *filp)
+{
+    return fseek(filp, 0, SEEK_END);
+}
+
 int FileLogSeek(Log *log, unsigned int offset)
 {
     FileLog *file_log = (FileLog *)log;
-    unsigned int coff;
     char scratchpad[MAX_LINE_LENGTH];
+    unsigned int i;
 
-    if (fseek(file_log->filp, 0, SEEK_SET) < 0) {
+    if (MoveFilePositionToStart(file_log->filp) < 0) {
         return -1;
     }
 
-    for (coff=0; coff<offset; ++coff) {
+    for (i=0; i<offset; ++i) {
         if (fgets(scratchpad, sizeof(scratchpad), file_log->filp) == NULL) {
-            fseek(file_log->filp, 0, SEEK_END);
+            return MoveFilePositionToEnd(file_log->filp);
         }
     }
 

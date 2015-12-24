@@ -107,10 +107,9 @@ int MemoryLogSeek(Log *log, unsigned int offset)
         return -1;
     }
 
+    top = memory_log->head;
     if (memory_log->head < memory_log->tail) {
         top = memory_log->head + memory_log->max_msg;
-    } else {
-        top = memory_log->head;
     }
     memory_log->cursor = Min(top, memory_log->tail+offset) % memory_log->max_msg;
 

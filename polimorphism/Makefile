@@ -1,7 +1,7 @@
 SRCS += $(wildcard src/*.c)
 OBJS = $(patsubst %.c,%.o,$(SRCS))
 CFLAGS += -Iinclude
-#V=@
+V=@
 
 example: $(OBJS)
 	$(V)$(CC) -g -o $@ $(LDFLAGS) $^
@@ -12,3 +12,5 @@ example: $(OBJS)
 clean::
 	$(RM) -f src/*.o
 	$(RM) -f example
+	
+include test.mk
