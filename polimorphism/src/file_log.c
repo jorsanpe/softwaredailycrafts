@@ -51,6 +51,7 @@ int FileLogRead(Log *log, char *buffer, unsigned int size)
     char *string;
 
     string = fgets(buffer, size, file_log->filp);
+    strtok(string, "\n");
 
     return (string == NULL) ? -1 : 0;
 }

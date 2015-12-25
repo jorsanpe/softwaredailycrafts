@@ -31,7 +31,7 @@ void DoTest(Log *log)
         LogSeek(log, offset);
         for (i=0; i<3; ++i) {
             if (LogRead(log, msg, MAX_LINE_LENGTH) != -1) {
-                printf("%s", msg);
+                printf("%s\n", msg);
             }
         }
     }

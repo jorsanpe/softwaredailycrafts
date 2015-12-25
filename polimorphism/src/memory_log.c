@@ -18,7 +18,7 @@ static struct log_interface memory_log_ops = {
     .destroy = MemoryLogDestroy,
 };
 
-static inline int Min(int x, int y)
+static inline int min(int x, int y)
 {
     return (x < y ? x : y);
 }
@@ -47,7 +47,7 @@ void MemoryLogDestroy(Log *log)
     free(memory_log->message_area);
 }
 
-static void AdvanceHead(MemoryLog *memory_log)
+static void advanceHead(MemoryLog *memory_log)
 {
     memory_log->head = (memory_log->head + 1) % memory_log->max_msg;
     if (memory_log->head == memory_log->tail) {
@@ -60,18 +60,18 @@ int MemoryLogWrite(Log *log, const char *msg)
 {
     MemoryLog *memory_log = (MemoryLog *)log;
 
-    snprintf(memory_log->message_buffer[memory_log->head], MAX_LINE_LENGTH, "%s\n", msg);
-    AdvanceHead(memory_log);
+    strncpy(memory_log->message_buffer[memory_log->head], msg, MAX_LINE_LENGTH);
+    advanceHead(memory_log);
 
     return 0;
 }
 
-static inline _Bool HasMoreMessages(MemoryLog *memory_log)
+static inline _Bool hasMoreMessages(MemoryLog *memory_log)
 {
     return memory_log->cursor != memory_log->head;
 }
 
-static void AdvanceCursor(MemoryLog *memory_log)
+static void advanceCursor(MemoryLog *memory_log)
 {
     if (memory_log->cursor != memory_log->head) {
         memory_log->cursor = (memory_log->cursor + 1) % memory_log->max_msg;
@@ -82,18 +82,18 @@ int MemoryLogRead(Log *log, char *buffer, unsigned int size)
 {
     MemoryLog *memory_log = (MemoryLog *)log;
 
-    if (!HasMoreMessages(memory_log)) {
+    if (!hasMoreMessages(memory_log)) {
         return -1;
     }
 
-    size = Min(size, MAX_LINE_LENGTH);
+    size = min(size, MAX_LINE_LENGTH);
     strncpy(buffer, memory_log->message_buffer[memory_log->cursor], size);
-    AdvanceCursor(memory_log);
+    advanceCursor(memory_log);
 
     return 0;
 }
 
-static inline _Bool IsValidOffset(MemoryLog *memory_log, unsigned int offset)
+static inline _Bool isValidOffset(MemoryLog *memory_log, unsigned int offset)
 {
     return offset < memory_log->max_msg;
 }
@@ -103,7 +103,7 @@ int MemoryLogSeek(Log *log, unsigned int offset)
     MemoryLog *memory_log = (MemoryLog *)log;
     int top;
 
-    if (!IsValidOffset(memory_log, offset)) {
+    if (!isValidOffset(memory_log, offset)) {
         return -1;
     }
 
@@ -111,7 +111,7 @@ int MemoryLogSeek(Log *log, unsigned int offset)
     if (memory_log->head < memory_log->tail) {
         top = memory_log->head + memory_log->max_msg;
     }
-    memory_log->cursor = Min(top, memory_log->tail+offset) % memory_log->max_msg;
+    memory_log->cursor = min(top, memory_log->tail+offset) % memory_log->max_msg;
 
     return 0;
 }

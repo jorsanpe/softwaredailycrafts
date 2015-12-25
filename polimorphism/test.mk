@@ -1,6 +1,6 @@
 TEST_CASES := \
 	test/file_log_should \
-	test/memory_log_should
+	test/memory_log_should \
 
 OBJ_file_log_should = \
 	test/file_log_should.o \
@@ -10,8 +10,15 @@ OBJ_memory_log_should = \
 	test/memory_log_should.o \
 	src/memory_log.o
 	
+
 ## Common rules
 UNITY_ROOT := ../Unity
+
+# Check Unity submodule when testing
+ifeq ($(shell find $(UNITY_ROOT) -mindepth 1),) 
+$(error please download Unity submodule: 'git submodule init && git submodule update')
+endif
+
 CFLAGS += -I$(UNITY_ROOT)/src
 
 .SECONDEXPANSION:
