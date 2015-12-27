@@ -93,25 +93,32 @@ int MemoryLogRead(Log *log, char *buffer, unsigned int size)
     return 0;
 }
 
-static inline _Bool isValidOffset(MemoryLog *memory_log, unsigned int offset)
+static inline int amountOfMessagesStored(MemoryLog *memory_log)
 {
-    return offset < memory_log->max_msg;
+    return memory_log->head >= memory_log->tail ?
+            memory_log->head - memory_log->tail :
+            memory_log->head + memory_log->max_msg - memory_log->tail;
+}
+
+static inline _Bool isNotValidOffset(MemoryLog *memory_log, unsigned int offset)
+{
+    return offset >= amountOfMessagesStored(memory_log);
+}
+
+static inline void setCursorAtOffset(MemoryLog *memory_log, unsigned int offset)
+{
+    memory_log->cursor = (memory_log->tail + offset) % memory_log->max_msg;
 }
 
 int MemoryLogSeek(Log *log, unsigned int offset)
 {
     MemoryLog *memory_log = (MemoryLog *)log;
-    int top;
 
-    if (!isValidOffset(memory_log, offset)) {
+    if (isNotValidOffset(memory_log, offset)) {
         return -1;
     }
 
-    top = memory_log->head;
-    if (memory_log->head < memory_log->tail) {
-        top = memory_log->head + memory_log->max_msg;
-    }
-    memory_log->cursor = min(top, memory_log->tail+offset) % memory_log->max_msg;
+    setCursorAtOffset(memory_log, offset);
 
     return 0;
 }

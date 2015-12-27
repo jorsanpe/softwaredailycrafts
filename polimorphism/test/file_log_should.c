@@ -16,6 +16,7 @@ _Bool fileExists(const char *filename) {
 
 void setUp(void)
 {
+    unlink(TEST_LOG_FILENAME);
 }
 
 void tearDown(void)

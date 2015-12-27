@@ -16,6 +16,16 @@ static struct log_interface file_log_ops = {
     .destroy = FileLogDestroy,
 };
 
+static inline int moveFilePositionToStart(FILE *filp)
+{
+    return fseek(filp, 0, SEEK_SET);
+}
+
+static inline int moveFilePositionToEnd(FILE *filp)
+{
+    return fseek(filp, 0, SEEK_END);
+}
+
 int FileLogInit(FileLog *log, const char *filename)
 {
     log->filp = fopen(filename, "w+");
@@ -38,11 +48,16 @@ int FileLogWrite(Log *log, const char *msg)
 {
     FileLog *file_log = (FileLog *)log;
 
-    fseek(file_log->filp, 0, SEEK_END);
+    moveFilePositionToEnd(file_log->filp);
     fprintf(file_log->filp, "%s\n", msg);
     fflush(file_log->filp);
 
     return 0;
+}
+
+static inline void removeTrailineNewlineCharacter(char *string)
+{
+    strtok(string, "\n");
 }
 
 int FileLogRead(Log *log, char *buffer, unsigned int size)
@@ -51,37 +66,33 @@ int FileLogRead(Log *log, char *buffer, unsigned int size)
     char *string;
 
     string = fgets(buffer, size, file_log->filp);
-    strtok(string, "\n");
+    removeTrailineNewlineCharacter(string);
 
     return (string == NULL) ? -1 : 0;
 }
 
-static inline int MoveFilePositionToStart(FILE *filp)
+static int readLinesUntilOffsetOrEOF(FILE *filp, unsigned int offset)
 {
-    return fseek(filp, 0, SEEK_SET);
-}
+    char scratchpad[MAX_LINE_LENGTH];
+    unsigned int i;
 
-static inline int MoveFilePositionToEnd(FILE *filp)
-{
-    return fseek(filp, 0, SEEK_END);
+    for (i=0; i<offset; ++i) {
+        if (fgets(scratchpad, sizeof(scratchpad), filp) == NULL) {
+            return moveFilePositionToEnd(filp);
+        }
+    }
+
+    return 0;
 }
 
 int FileLogSeek(Log *log, unsigned int offset)
 {
     FileLog *file_log = (FileLog *)log;
-    char scratchpad[MAX_LINE_LENGTH];
-    unsigned int i;
 
-    if (MoveFilePositionToStart(file_log->filp) < 0) {
+    if (moveFilePositionToStart(file_log->filp) < 0) {
         return -1;
     }
 
-    for (i=0; i<offset; ++i) {
-        if (fgets(scratchpad, sizeof(scratchpad), file_log->filp) == NULL) {
-            return MoveFilePositionToEnd(file_log->filp);
-        }
-    }
-
-    return 0;
+    return readLinesUntilOffsetOrEOF(file_log->filp, offset);
 }
 
