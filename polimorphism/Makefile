@@ -1,13 +1,13 @@
 SRCS += $(wildcard src/*.c)
 OBJS = $(patsubst %.c,%.o,$(SRCS))
-CFLAGS += -Iinclude
+CFLAGS += -Iinclude -g
 #V=@
 
 example: $(OBJS)
-	$(V)$(CC) -g -o $@ $(LDFLAGS) $^
+	$(V)$(CC) -o $@ $(LDFLAGS) $^
 
 %.o: %.c
-	$(V)$(CC) -g -c -o $@ $(CFLAGS) $<
+	$(V)$(CC) -c -o $@ $(CFLAGS) $<
 
 clean::
 	$(RM) -f src/*.o

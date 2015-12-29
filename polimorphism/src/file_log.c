@@ -55,7 +55,7 @@ int FileLogWrite(Log *log, const char *msg)
     return 0;
 }
 
-static inline void removeTrailineNewlineCharacter(char *string)
+static inline void removeTrailingNewlineCharacter(char *string)
 {
     strtok(string, "\n");
 }
@@ -66,7 +66,7 @@ int FileLogRead(Log *log, char *buffer, unsigned int size)
     char *string;
 
     string = fgets(buffer, size, file_log->filp);
-    removeTrailineNewlineCharacter(string);
+    removeTrailingNewlineCharacter(string);
 
     return (string == NULL) ? -1 : 0;
 }
