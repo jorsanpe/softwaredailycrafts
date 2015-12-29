@@ -24,7 +24,7 @@ public class BloomFilter {
         elementCount++;
     }
 
-    public boolean check(String word) {
+    public boolean contains(String word) {
         for (HashFunction h : hashFunctions) {
             if (!bitset.get(hash(word, h))) {
                 return false;

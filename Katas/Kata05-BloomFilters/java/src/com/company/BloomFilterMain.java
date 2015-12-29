@@ -13,7 +13,7 @@ public class BloomFilterMain {
 
     public static void main(String[] args) throws Exception {
         int bitmapSize = 6000000;
-        int randomWords = 100000;
+        int numberWords = 100000;
 
         BloomFilter filter = null;
         filter = BloomFilterBuilder.aFilter()
@@ -28,17 +28,21 @@ public class BloomFilterMain {
 
         feedBloomFilter(filter, "/usr/share/dict/words");
 
+        testFilter(filter, bitmapSize, numberWords);
+    }
+
+    private static void testFilter(BloomFilter filter, int bitmapSize, int numberWords) throws IOException {
         float falsePositives = 0;
-        for (int i = 0; i < randomWords; i++) {
+        for (int i = 0; i < numberWords; i++) {
             String word = generateRandomWord(randomLength());
-            if (filter.check(word) && !searchInFile(word, "/usr/share/dict/words")) {
+            if (filter.contains(word) && !fileContains(word, "/usr/share/dict/words")) {
                 falsePositives++;
             }
         }
         System.out.format("Configuration\n\t%d bits\n\t%d hash functions\n\t%d words inserted\n\t%.2f bits-to-words ratio\n",
                 bitmapSize, filter.hashFunctionCount(), filter.getElementCount(), (float)bitmapSize / filter.getElementCount());
         System.out.format("-------\n");
-        System.out.format("False positive ratio: %.6f\n", falsePositives / (float)randomWords);
+        System.out.format("False positive ratio: %.6f\n", falsePositives / (float)numberWords);
     }
 
     private static int randomLength() {
@@ -46,7 +50,7 @@ public class BloomFilterMain {
     }
 
     private static void checkWord(BloomFilter filter, String word) {
-        System.out.format("Checking for '%s': %s\n", word, filter.check(word) ? "Ok" : "Missing");
+        System.out.format("Checking for '%s': %s\n", word, filter.contains(word) ? "Ok" : "Missing");
     }
 
     private static void feedBloomFilter(BloomFilter filter, String filename) throws IOException {
@@ -58,7 +62,7 @@ public class BloomFilterMain {
         }
     }
 
-    private static boolean searchInFile(String searchTerm, String filename) throws IOException {
+    private static boolean fileContains(String searchTerm, String filename) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(filename));
         String word;
 

@@ -25,8 +25,8 @@ public class BloomFilterShould {
 
         filter.insert("word");
 
-        assertTrue(filter.check("word"));
-        assertFalse(filter.check("chair"));
+        assertTrue(filter.contains("word"));
+        assertFalse(filter.contains("chair"));
     }
 
 }
