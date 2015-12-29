@@ -6,9 +6,6 @@ import java.security.NoSuchAlgorithmException;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by jordi on 28/12/15.
- */
 public class HashFunctionShould {
     @Test
     public void shouldConvertStringIntoNumberDjb2() {

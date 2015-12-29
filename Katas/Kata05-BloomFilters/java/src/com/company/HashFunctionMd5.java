@@ -1,3 +1,11 @@
+/**
+ * HashFunctionMd5 - A hash function based on MD5 digest
+ *
+ * Copyright (C) 2015 Jordi Sánchez, jorsanpe@gmail.com
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
 package com.company;
 
 import java.security.MessageDigest;
@@ -5,9 +13,6 @@ import java.security.NoSuchAlgorithmException;
 
 import static java.lang.Math.abs;
 
-/**
- * Created by jordi on 28/12/15.
- */
 public class HashFunctionMd5 implements HashFunction {
     MessageDigest messageDigest;
     int baseIndex;

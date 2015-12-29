@@ -7,9 +7,6 @@ import java.security.NoSuchAlgorithmException;
 import static com.company.BloomFilterBuilder.*;
 import static org.junit.Assert.*;
 
-/**
- * Created by jordi on 28/12/15.
- */
 public class BloomFilterShould {
     @Test
     public void shouldInsertObject() {
