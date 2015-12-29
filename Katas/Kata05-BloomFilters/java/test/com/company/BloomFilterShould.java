@@ -4,9 +4,8 @@ import org.junit.Test;
 
 import java.security.NoSuchAlgorithmException;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static com.company.BloomFilterBuilder.*;
+import static org.junit.Assert.*;
 
 /**
  * Created by jordi on 28/12/15.
@@ -16,7 +15,7 @@ public class BloomFilterShould {
     public void shouldInsertObject() {
         BloomFilter filter = null;
         try {
-            filter = BloomFilterBuilder.aFilter()
+            filter = aFilter()
                     .withBitmapSize(120000)
                     .withHashFunctions(new HashFunctionDjb2(), new HashFunctionSdbm(), new HashFunctionMd5(0))
                     .build();

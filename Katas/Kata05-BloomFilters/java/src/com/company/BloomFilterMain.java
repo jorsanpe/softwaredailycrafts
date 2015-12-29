@@ -9,8 +9,10 @@ import java.util.Random;
  * Created by jordi on 28/12/15.
  */
 public class BloomFilterMain {
+    public static Random random = new Random();
+
     public static void main(String[] args) throws Exception {
-        int bitmapSize = 3000000;
+        int bitmapSize = 6000000;
         int randomWords = 100000;
 
         BloomFilter filter = null;
@@ -21,15 +23,14 @@ public class BloomFilterMain {
                         new HashFunctionSdbm(),
                         new HashFunctionMd5(0),
                         new HashFunctionMd5(4),
-                        new HashFunctionMd5(8),
-                        new HashFunctionMd5(12))
+                        new HashFunctionMd5(8))
                 .build();
 
         feedBloomFilter(filter, "/usr/share/dict/words");
 
         float falsePositives = 0;
         for (int i = 0; i < randomWords; i++) {
-            String word = generateRandomWord();
+            String word = generateRandomWord(randomLength());
             if (filter.check(word) && !searchInFile(word, "/usr/share/dict/words")) {
                 falsePositives++;
             }
@@ -38,6 +39,10 @@ public class BloomFilterMain {
                 bitmapSize, filter.hashFunctionCount(), filter.getElementCount(), (float)bitmapSize / filter.getElementCount());
         System.out.format("-------\n");
         System.out.format("False positive ratio: %.6f\n", falsePositives / (float)randomWords);
+    }
+
+    private static int randomLength() {
+        return random.nextInt(5)+3;
     }
 
     private static void checkWord(BloomFilter filter, String word) {
@@ -66,12 +71,11 @@ public class BloomFilterMain {
         return false;
     }
 
-    private static String generateRandomWord() {
+    private static String generateRandomWord(int wordLength) {
         char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'".toCharArray();
         StringBuilder sb = new StringBuilder();
-        Random random = new Random();
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < wordLength; i++) {
             sb.append(chars[random.nextInt(chars.length)]);
         }
 
