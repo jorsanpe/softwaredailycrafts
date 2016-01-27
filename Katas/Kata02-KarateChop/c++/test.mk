@@ -3,7 +3,8 @@ TEST_CASES := \
 
 OBJ_chop_should = \
 	test/chop_should.o \
-	src/iterative_chop.o
+	src/iterative_chop.o \
+	src/recursive_chop.o \
 	
 
 ## Common rules

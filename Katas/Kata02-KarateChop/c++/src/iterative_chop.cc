@@ -5,25 +5,26 @@
  *  
  * @author: Jordi Sánchez, jorsanpe@gmail.com
  */
-#include <iterative_chop.h>
+#include <recursive_chop.h>
 
-int IterativeChop::chop(int value, int *array, int size)
+int RecursiveChop::rechop(int value, int *array, int low, int top)
 {
-    int middle, low, top;
+    int middle;
 
-    low = 0;
-    top = size - 1;
-
-    while (low <= top) {
-        middle = (top + low) / 2;
-        if (array[middle] < value) {
-            low = middle + 1;
-        } else if (array[middle] > value) {
-            top = middle - 1;
-        } else {
-            return middle;
-        }
+    if (low > top) {
+        return -1;
     }
+    middle = (top + low) / 2;
+    if (value < array[middle]) {
+        return this->rechop(value, array, low, middle-1);
+    }
+    if (value > array[middle]) {
+        return this->rechop(value, array, middle+1, top);
+    }
+    return middle;
+}
 
-    return -1;
+int RecursiveChop::chop(int value, int *array, int size)
+{
+    return this->rechop(value, array, 0, size-1);
 }
