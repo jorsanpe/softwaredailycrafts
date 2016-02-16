@@ -6,8 +6,9 @@
  * @author: Jordi Sánchez, jorsanpe@gmail.com
  */
 #include <iostream>
+#include <CppUTest/CommandLineTestRunner.h>
 
 int main(int argc, char **argv)
 {
-    std::cout << "Hello World!\n";
+    return CommandLineTestRunner::RunAllTests(argc, argv);
 }

@@ -1,8 +1,9 @@
 TEST_CASES := \
-	test/test_hello
+	test/pjw_hash_function_should
 
-OBJ_hello = \
-	test/test_hello.o \
+OBJ_pjw_hash_function_should = \
+	test/pjw_hash_function_should.o \
+	src/pjw_hash_function.o
 	
 ## Common rules
 CPPUTEST_DIR := ../../../cpputest
@@ -13,28 +14,13 @@ $(error please download CppUTest submodule: 'git submodule init && git submodule
 endif
 
 CPPFLAGS += -I./include -I$(CPPUTEST_DIR)/include
-LDFLAGS += -Lcpputest -lcpputest -lpthread
-
-CPPUTEST_SRCS = $(wildcard $(CPPUTEST_DIR)/src/CppUTest*/*.cpp)
-CPPUTEST_OBJS = $(patsubst $(CPPUTEST_DIR)/src/%.cpp,cpputest/%.o,$(CPPUTEST_SRCS))
-
-cpputest/CppUTest:
-	@mkdir -p $@
-
-cpputest/CppUTestExt:
-	@mkdir -p $@
-
-cpputest/%.o: $(CPPUTEST_DIR)/src/%.cpp
-	$(C++) -c $(CPPFLAGS) -o $@ $<
-
-cpputest/libcpputest.a: $(CPPUTEST_OBJS)
-	@$(AR) -r $@ $^
+LDFLAGS += -L$(CPPUTEST_DIR)/lib -lCppUTest -lpthread
 
 .SECONDEXPANSION:
-test/%: $$(OBJ_%) $$@.o
+test/%: $$(OBJ_%) $$@.o test/main.o
 	@$(C++) -o $@ $^ $(LDFLAGS)
 
-unit_test: | cpputest/CppUTest cpputest/CppUTestExt cpputest/libcpputest.a $(TEST_CASES)
+unit_test: $(TEST_CASES)
 	@for t in $(TEST_CASES); do ./$$t; done
 	
 clean::

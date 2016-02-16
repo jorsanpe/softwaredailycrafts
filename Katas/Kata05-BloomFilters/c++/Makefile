@@ -6,9 +6,6 @@ C++ := c++
 
 all: unit_test
 
-%.o: %.c
-	$(V)$(CC) -c -o $@ $(CFLAGS) $<
-
 %.o: %.cc
 	$(V)$(C++) -c -o $@ $(CPPFLAGS) $<
 
