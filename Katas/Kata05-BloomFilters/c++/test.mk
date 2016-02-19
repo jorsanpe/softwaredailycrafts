@@ -1,9 +1,14 @@
 TEST_CASES := \
-	test/pjw_hash_function_should
+	test/pjw_hash_function_should \
+	test/md5_hash_function_should
 
 OBJ_pjw_hash_function_should = \
 	test/pjw_hash_function_should.o \
 	src/pjw_hash_function.o
+
+OBJ_md5_hash_function_should = \
+	test/md5_hash_function_should.o \
+	src/md5_hash_function.o
 	
 ## Common rules
 CPPUTEST_DIR := ../../../cpputest
