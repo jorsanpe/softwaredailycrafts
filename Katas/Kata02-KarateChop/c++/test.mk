@@ -12,7 +12,7 @@ GTEST_DIR := ../../../googletest/googletest
 
 # Check Unity submodule when testing
 ifeq ($(shell find $(GTEST_DIR) -mindepth 1),) 
-$(error please download Unity submodule: 'git submodule init && git submodule update')
+$(error please download googletest submodule: 'git submodule init && git submodule update')
 endif
 
 CPPFLAGS += -I. -Igtest
