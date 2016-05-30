@@ -1,5 +1,7 @@
 package com.gildedrose;
 
 public interface ItemHolder {
-    void updateQuality(Item item);
+    void updateQuality();
+
+    Item get();
 }
